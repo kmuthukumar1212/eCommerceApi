@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Api
 {
@@ -29,6 +30,7 @@ namespace Api
         {
             services.AddControllers();
             services.AddDbContext<ApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApiContext")));
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +40,12 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(options => options
+                                    .WithOrigins("http://localhost:8080")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+            );
 
             app.UseHttpsRedirection();
 
