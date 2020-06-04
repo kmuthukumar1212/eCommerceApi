@@ -20,6 +20,8 @@ namespace Api.Controllers
             this.context = context;
         }
 
+        // GET /api/categories
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
             return await context.Categories.OrderBy(x => x.Id).ToListAsync();
