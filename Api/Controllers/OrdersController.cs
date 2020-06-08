@@ -26,5 +26,15 @@ namespace Api.Controllers
         {
             return await context.Orders.OrderBy(x => x.Id).ToListAsync();
         }
+
+        // POST /api/orders
+        [HttpPost]
+        public async Task<ActionResult<Order>> Create([FromForm] Order order)
+        {
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Create), order);
+        }
     }
 }
