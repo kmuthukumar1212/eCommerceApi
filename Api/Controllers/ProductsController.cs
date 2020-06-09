@@ -37,7 +37,7 @@ namespace Api.Controllers
 
             return await products.ToListAsync();
         }
-        
+
         // GET /api/products/category
         [HttpGet("{slug}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(string slug, int p = 1)
@@ -54,7 +54,7 @@ namespace Api.Controllers
 
             return await products.ToListAsync();
         }
-        
+
         // GET /api/products/count/category
         [HttpGet("count/{slug}")]
         public async Task<ActionResult<int>> GetProductCount(string slug)
@@ -69,7 +69,7 @@ namespace Api.Controllers
 
             return await context.Products.Where(x => x.CategoryId == category.Id).CountAsync();
         }
-        
+
         // POST /api/products
         [HttpPost]
         public async Task<ActionResult<Product>> Create([FromForm] Product product)
@@ -93,7 +93,7 @@ namespace Api.Controllers
 
             return Ok();
         }
-        
+
         // PUT /api/products
         [HttpPut]
         public async Task<ActionResult<Product>> Update([FromForm] Product product)
@@ -102,8 +102,8 @@ namespace Api.Controllers
             {
                 string uploadsDir = Path.Combine(webHostEnvironment.WebRootPath, "media/products");
 
-                var currentImage = (from p in context.Products 
-                                    where p.Id == product.Id 
+                var currentImage = (from p in context.Products
+                                    where p.Id == product.Id
                                     select p.Image).Single();
 
                 if (!string.Equals(currentImage, "noimage.png"))
@@ -133,5 +133,29 @@ namespace Api.Controllers
 
             return NoContent();
         }
+
+        // DELETE /api/products/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Product>> Delete(int id)
+        {
+            var product = await context.Products.FindAsync(id);
+
+            if (!string.Equals(product.Image, "noimage.png"))
+            {
+                string uploadsDir = Path.Combine(webHostEnvironment.WebRootPath, "media/products");
+                string oldImagePath = Path.Combine(uploadsDir, product.Image);
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+
+            context.Products.Remove(product);
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
+
+
 }
