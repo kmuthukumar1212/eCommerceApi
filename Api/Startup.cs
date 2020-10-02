@@ -29,7 +29,7 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ApiContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApiContext")));
+            services.AddDbContext<ApiContext>(options => options.UseNpgsql(Configuration.GetConnectionString("ApiContext")));
             services.AddCors();
         }
 
